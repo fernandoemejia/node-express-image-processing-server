@@ -1,7 +1,7 @@
 const {Router}= require('express');
 const multer= require('multer');
 
-const router= Router;
+const router= Router();
 
 const filename= (request, file, callback)=>{
     callback(null, file.originalname);
@@ -18,7 +18,7 @@ const fileFilter= (request,file,callback) =>{
 };
 
 
-const upload=multer({fileFilter:fileFilter, storage: storage});
+const upload=multer({fileFilter, storage,});
 
 router.post('/upload',upload.single('photo'), (request, response)=>{
     if (request.fileValidationError){
