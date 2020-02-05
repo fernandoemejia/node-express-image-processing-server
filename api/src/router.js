@@ -25,7 +25,7 @@ router.post('/upload',upload.single('photo'), (request, response)=>{
         return response.status(400).json({error:request.fileValidationError});
     }
     else{
-        return response(201).json({success: true});
+        return response.status(201).json({success: true});
     }
 })
 
