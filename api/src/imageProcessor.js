@@ -14,7 +14,7 @@ const imageProcessor= (filename)=>{
     const resizedDestination=uploadPathResolver('resized-'+filename);
     const monochromeDestination=uploadPathResolver('monochrome-'+filename);
     let resizeWorkerFinished= false;
-    let monochromeWorkerFinished =false;
+    let  monochromeWorkerFinished =false;
      return new Promise((resolve, reject)=>{
         if(isMainThread){
             try{
@@ -41,7 +41,12 @@ const imageProcessor= (filename)=>{
                     resolve('resizeWorker finished processing');
                 }
                 })
-                resizeWorker.on('error',(code)=>{
+
+                resizeWorker.on('error',(error)=>{
+                    reject(new Error(error.message));
+                });
+
+                resizeWorker.on('exit',(code)=>{
                     
                     if( code!==0){
                         reject(new Error('Exited with status code '+code));
@@ -49,9 +54,7 @@ const imageProcessor= (filename)=>{
                         
                 });
 
-                resizeWorker.on('exit',(error)=>{
-                    reject(new Error(error.message));
-                });
+              
 
                 monochromeWorker.on('message', (message)=>{
                     monochromeWorkerFinished =true;
@@ -79,7 +82,7 @@ const imageProcessor= (filename)=>{
         }else{
             reject(new Error('not on main thread'));
         }
-     
+       
     })
 }
 
