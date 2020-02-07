@@ -6,7 +6,7 @@ const photoPath= path.resolve(__dirname,'../../client/photo-viewer.html');
 
 const router= Router();
 
-
+const imageProcessor= require('./imageProcessor');
 
 const filename= (request, file, callback)=>{
     callback(null, file.originalname);
@@ -33,13 +33,22 @@ router.get('/photo-viewer',(request, response)=>{
 
 
 
-router.post('/upload',upload.single('photo'), (request, response)=>{
-    if (request.fileValidationError){
+router.post('/upload',upload.single('photo'), async (request, response)=>{
+  
+   
+  
+  
+    if (request.fileValidationError)
         return response.status(400).json({error:request.fileValidationError});
-    }
-    else{
+    
+        try{
+            await imageProcessor(request.file.filename);
+        }catch{
+    
+        }
+   
         return response.status(201).json({success: true});
-    }
+    
 })
 
 module.exports=router;
